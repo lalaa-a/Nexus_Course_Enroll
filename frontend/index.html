@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusEnroll - Student Enrollment System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- for the alerts -->
+    <div id="alert-container" style="width: 500px;"></div>
+
+    <header class="header">
+            <h1>NexusEnroll</h1>
+            <p>Student Enrollment Management System</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="login-container" id="loginContainer">
+            <div class="auth-tabs">
+                <button class="tab-btn active" onclick="showLoginForm()">Login</button>
+                <button class="tab-btn" onclick="showSignupForm()">Student Sign Up</button>
+            </div>
+            
+            <div class="login-form" id="loginFormContainer">
+                <h2>Login</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+                
+                <div class="demo-credentials">
+                    <h3>Demo Credentials:</h3>
+                    <div class="credential-group">
+                        <strong>Admin:</strong> admin / admin123
+                    </div>
+                    <div class="credential-group">
+                        <strong>Faculty:</strong> prof_smith / prof123
+                    </div>
+                    <div class="credential-group">
+                        <strong>Student:</strong> john_doe / student123
+                    </div>
+                </div>
+            </div>
+
+            <div class="signup-form" id="signupFormContainer" style="display: none;">
+                <h2>Student Sign Up</h2>
+                <form id="signupForm">
+                    <div class="form-group">
+                        <label for="signupFullName">Full Name:</label>
+                        <input type="text" id="signupFullName" name="fullName" required 
+                               placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupUsername">Username:</label>
+                        <input type="text" id="signupUsername" name="username" required 
+                               placeholder="Choose a username (min 3 characters)">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail">Email:</label>
+                        <input type="email" id="signupEmail" name="email" required 
+                               placeholder="Enter your email address">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password:</label>
+                        <input type="password" id="signupPassword" name="password" required 
+                               placeholder="Choose a password (min 6 characters)">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupConfirmPassword">Confirm Password:</label>
+                        <input type="password" id="signupConfirmPassword" name="confirmPassword" required 
+                               placeholder="Confirm your password">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Student Account</button>
+                </form>
+                
+                <div class="signup-info">
+                    <p><strong>Note:</strong> This sign-up is for students only. Faculty and admin accounts must be created by administrators.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Dashboard -->
+        <div class="dashboard student-dashboard" id="studentDashboard" style="display: none;">
+            <nav class="nav-bar">
+                <h2>Student Dashboard</h2>
+                <div class="nav-links">
+                    <button class="nav-btn active" data-section="course-browse">Browse Courses</button>
+                    <button class="nav-btn" data-section="my-schedule">My Schedule</button>
+                    <button class="nav-btn" data-section="my-grades">My Grades</button>
+                    <button class="nav-btn" data-section="notifications">Notifications</button>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </nav>
+
+            <div class="content">
+                <!-- Course Browse Section -->
+                <div class="section active" id="course-browse">
+                    <h3>Course Catalogue</h3>
+                    <div class="filters">
+                        <input type="text" id="courseSearch" placeholder="Search courses...">
+                        <select id="departmentFilter">
+                            <option value="">All Departments</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Business">Business</option>
+                        </select>
+                        <input type="text" id="instructorFilter" placeholder="Instructor name...">
+                        <button onclick="searchCourses()">Search</button>
+                    </div>
+                    <div id="courseList" class="course-list"></div>
+                </div>
+
+                <!-- My Schedule Section -->
+                <div class="section" id="my-schedule">
+                    <h3>My Schedule</h3>
+                    <select id="semesterSelect">
+                        <option value="Fall 2024">Fall 2024</option>
+                        <option value="Spring 2024">Spring 2024</option>
+                    </select>
+                    <div id="scheduleView" class="schedule-view"></div>
+                </div>
+
+                <!-- My Grades Section -->
+                <div class="section" id="my-grades">
+                    <h3>Academic Progress</h3>
+                    <div id="gradesView" class="grades-view"></div>
+                </div>
+
+                <!-- Notifications Section -->
+                <div class="section" id="notifications">
+                    <h3>Notifications</h3>
+                    <div id="notificationsList" class="notifications-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Faculty Dashboard -->
+        <div class="dashboard faculty-dashboard" id="facultyDashboard" style="display: none;">
+            <nav class="nav-bar">
+                <h2>Faculty Dashboard</h2>
+                <div class="nav-links">
+                    <button class="nav-btn active" data-section="my-courses">My Courses</button>
+                    <button class="nav-btn" data-section="grade-submission">Grade Submission</button>
+                    <button class="nav-btn" data-section="course-management">Course Management</button>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </nav>
+
+            <div class="content">
+                <!-- My Courses Section -->
+                <div class="section active" id="my-courses">
+                    <h3>My Courses</h3>
+                    <div id="facultyCoursesList" class="faculty-courses-list"></div>
+                </div>
+
+                <!-- Grade Submission Section -->
+                <div class="section" id="grade-submission">
+                    <h3>Grade Submission</h3>
+                    <select id="gradesCourseSelect">
+                        <option value="">Select a course...</option>
+                    </select>
+                    <div id="gradesSubmissionForm" class="grades-form"></div>
+                </div>
+
+                <!-- Course Management Section -->
+                <div class="section" id="course-management">
+                    <h3>Course Management</h3>
+                    <div id="courseManagementView"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div class="dashboard admin-dashboard" id="adminDashboard" style="display: none;">
+            <nav class="nav-bar">
+                <h2>Admin Dashboard</h2>
+                <div class="nav-links">
+                    <button class="nav-btn active" data-section="course-admin">Course Management</button>
+                    <button class="nav-btn" data-section="user-admin">User Management</button>
+                    <button class="nav-btn" data-section="reports">Reports & Analytics</button>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </nav>
+
+            <div class="content">
+                <!-- Course Admin Section -->
+                <div class="section active" id="course-admin">
+                    <h3>Course Management</h3>
+                    <button class="btn btn-primary" onclick="showCreateCourseForm()">Create New Course</button>
+                    <div id="adminCoursesList" class="admin-courses-list"></div>
+                    <div id="createCourseModal" class="modal" style="display: none;">
+                        <div class="modal-content">
+                            <span class="close" onclick="hideCreateCourseForm()">&times;</span>
+                            <h4>Create New Course</h4>
+                            <form id="createCourseForm">
+                                <div class="form-row">
+                                    <input type="text" name="course_code" placeholder="Course Code" required>
+                                    <input type="text" name="name" placeholder="Course Name" required>
+                                </div>
+                                <textarea name="description" placeholder="Course Description" required></textarea>
+                                <div class="form-row">
+                                    <select name="instructor_id" required>
+                                        <option value="">Select Instructor</option>
+                                    </select>
+                                    <input type="number" name="capacity" placeholder="Capacity" required>
+                                </div>
+                                <div class="form-row">
+                                    <input type="text" name="schedule" placeholder="Schedule (e.g., MWF 9:00-10:00)" required>
+                                    <input type="text" name="location" placeholder="Location" required>
+                                </div>
+                                <div class="form-row">
+                                    <input type="text" name="department" placeholder="Department" required>
+                                    <input type="number" name="credits" placeholder="Credits" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Create Course</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Admin Section -->
+                <div class="section" id="user-admin">
+                    <h3>User Management</h3>
+                    <button class="btn btn-primary" onclick="showCreateUserForm()">Create New User</button>
+                    <div id="adminUsersList" class="admin-users-list"></div>
+                    
+                    <!-- Create User Modal -->
+                    <div id="createUserModal" class="modal" style="display: none;">
+                        <div class="modal-content">
+                            <span class="close" onclick="hideCreateUserForm()">&times;</span>
+                            <h4>Create New User</h4>
+                            <form id="createUserForm">
+                                <div class="form-row">
+                                    <input type="text" name="username" placeholder="Username" required>
+                                    <input type="email" name="email" placeholder="Email" required>
+                                </div>
+                                <div class="form-row">
+                                    <input type="text" name="full_name" placeholder="Full Name" required>
+                                    <input type="password" name="password" placeholder="Password" required>
+                                </div>
+                                <div class="form-row">
+                                    <select name="role" required>
+                                        <option value="">Select Role</option>
+                                        <option value="student">Student</option>
+                                        <option value="faculty">Faculty</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
+                                </div>
+                                <div class="form-row">
+                                    <label>
+                                        <input type="checkbox" name="is_active" checked> Active User
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Create User</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Section -->
+                <div class="section" id="reports">
+                    <h3>Reports & Analytics</h3>
+                    <div class="reports-nav">
+                        <button class="btn" onclick="loadEnrollmentStats()">Enrollment Statistics</button>
+                        <button class="btn" onclick="loadFacultyWorkload()">Faculty Workload</button>
+                        <button class="btn" onclick="loadCoursePopularity()">Course Popularity</button>
+                        <button class="btn" onclick="loadHighCapacityCourses()">High Capacity Courses</button>
+                    </div>
+                    <div id="reportsView" class="reports-view"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
